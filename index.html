@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Romantic Message</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem;
+        max-width: 600px;
+        width: 100%;
+        margin: auto;
+        color: #333;
+        text-align: center;
+        background: linear-gradient(to right, #ff9a9e, #fad0c4);
+        font-family: "Dancing Script", cursive;
+        text-align: center;
+      }
+
+      body h1 {
+        background-color: #fff;
+        color: purple;
+        width: 100%;
+        border-radius: 30px;
+        padding: 0.8rem 0;
+      }
+      button {
+        background-color: purple;
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        margin: 1rem;
+        font-size: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      #message {
+        margin-top: 2rem;
+        font-size: 2rem;
+        font-size: 600;
+        white-space: pre-wrap;
+        border: 1px solid purple;
+        padding: 1.6rem 2rem;
+        border-radius: 8px;
+        background-color: #fff0f6;
+        display: none;
+        line-height: 1.8rem;
+      }
+      .heart,
+      .heart1,
+      .heart2,
+      .heart2,
+      .heart4 {
+        position: fixed;
+        width: 400px;
+        height: 400px;
+        background-color: red;
+        clip-path: path("M10 30 C 10 10, 30 10, 30 30 C 30 50, 10 50, 10 30");
+        animation: float 4s ease-in-out infinite;
+        opacity: 0.3;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translateY(-50px) scale(1.2);
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(0) scale(1);
+          opacity: 0.3;
+        }
+      }
+
+      .heart-div {
+        display: flex;
+        justify-content: space-between;
+        /* align-items: center; */
+        gap: 4rem;
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <h1>Secret Romantic Message 💌</h1>
+
+    <button id="fetchEncrypted">Get Encrypted Message</button>
+    <button id="decryptMessage" disabled>Decrypt Message</button>
+
+    <div id="message"></div>
+    <div class="heart-div">
+      <div class="heart"></div>
+      <div class="heart1"></div>
+      <div class="heart2"></div>
+      <div class="heart3"></div>
+      <div class="heart4"></div>
+    </div>
+
+    <script>
+      let encryptedPayload = null;
+
+      document.getElementById("fetchEncrypted").onclick = async () => {
+        try {
+          console.log("Fetching encrypted message...");
+          const res = await fetch("http://localhost:10000/encrypt");
+          if (!res.ok) {
+            alert("Failed to fetch encrypted message: " + res.statusText);
+            return;
+          }
+          encryptedPayload = await res.json();
+          console.log("Encrypted payload:", encryptedPayload);
+          alert("Encrypted message received! Now click 'Decrypt Message'.");
+          document.getElementById("decryptMessage").disabled = false;
+          document.getElementById("message").style.display = "none";
+        } catch (error) {
+          alert("Error fetching encrypted message: " + error.message);
+          console.error(error);
+        }
+      };
+
+      document.getElementById("decryptMessage").onclick = async () => {
+        if (!encryptedPayload) return alert("No encrypted data found!");
+        try {
+          console.log(
+            "Sending decrypt request with payload:",
+            encryptedPayload
+          );
+          const res = await fetch("http://localhost:10000/decrypt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(encryptedPayload),
+          });
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            alert("Decryption failed: " + errorText);
+            console.error("Decryption error response:", errorText);
+            return;
+          }
+
+          const data = await res.json();
+          console.log("Decrypted message received:", data.message);
+          const messageDiv = document.getElementById("message");
+          messageDiv.textContent = data.message;
+          messageDiv.style.display = "block";
+        } catch (error) {
+          alert("Error during decryption: " + error.message);
+          console.error(error);
+        }
+      };
+    </script>
+  </body>
+</html>
