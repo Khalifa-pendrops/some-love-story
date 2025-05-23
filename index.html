@@ -109,7 +109,7 @@
       document.getElementById("fetchEncrypted").onclick = async () => {
         try {
           console.log("Fetching encrypted message...");
-          const res = await fetch("http://localhost:10000/encrypt");
+          const res = await fetch("https://some-love-story.onrender.com/encrypt");
           if (!res.ok) {
             alert("Failed to fetch encrypted message: " + res.statusText);
             return;
@@ -132,7 +132,7 @@
             "Sending decrypt request with payload:",
             encryptedPayload
           );
-          const res = await fetch("http://localhost:10000/decrypt", {
+          const res = await fetch("https://some-love-story.onrender.com/decrypt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(encryptedPayload),

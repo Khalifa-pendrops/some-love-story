@@ -7,7 +7,14 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+const corsOptions = {
+  origin: "https://some-love-story.vercel.app/",
+  method: ["POST", "GET", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+app.use(express.static("public"));
 app.use(express.json());
 
 const key = Buffer.from(process.env.KEY, "hex");
@@ -55,8 +62,6 @@ app.get("/encrypt", (req, res) => {
     res.status(500).send("Encryption failed: " + error.message);
   }
 });
-
-
 
 app.post("/decrypt", (req, res) => {
   try {
