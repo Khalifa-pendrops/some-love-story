@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 const corsOptions = {
   origin: "https://some-love-story.vercel.app/",
   methods: ["POST", "GET", "OPTIONS"],
-  allowedHeaders: ["Content-Type"],
+  // allowedHeaders: ["Content-Type"],
 };
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
