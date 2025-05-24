@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const crypto = require("crypto");
 
-const User = require("../backend/models/user.model");
-const Message = require("../backend/models/message.model");
+const User = require("./models/user.model");
+const Message = require("./models/message.model");
 
 dotenv.config();
 const app = express();
